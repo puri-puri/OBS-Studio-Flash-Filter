@@ -1,0 +1,153 @@
+/*****************************************************************************
+ +Copyright (C) 2017 by Eric Rasmuson <erasmuson@gmail.com>
+ +
+ +This file is part of OBS.
+ +
+ +OBS is free software: you can redistribute it and/or modify
+ +it under the terms of the GNU General Public License as published by
+ +the Free Software Foundation, either version 2 of the License, or
+ +(at your option) any later version.
+ +
+ +This program is distributed in the hope that it will be useful,
+ +but WITHOUT ANY WARRANTY; without even the implied warranty of
+ +MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ +GNU General Public License for more details.
+ +
+ +You should have received a copy of the GNU General Public License
+ +along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ +*****************************************************************************/
+
+uniform float4x4 ViewProj;
+uniform texture2d image;
+
+uniform texture2d currentTex1;
+uniform texture2d oldTex1;
+uniform texture2d oldTex2;
+uniform texture2d oldTex3;
+uniform texture2d oldTex4;
+uniform texture2d oldTex5;
+
+uniform texture2d target; //final output of shader
+uniform float4 color;
+uniform float threshold1;
+uniform float4 colorTarget;
+
+
+sampler_state textureSampler {
+	Filter    = Linear;
+	AddressU  = Clamp;
+	AddressV  = Clamp;
+};
+
+struct VertDataIn {
+	float4 pos : POSITION;
+	float2 uv  : TEXCOORD0;
+};
+
+struct VertDataOut {
+	float4 pos : POSITION;
+	float2 uv  : TEXCOORD0;
+};
+
+
+bool checkTolerance(float ref, float tgt, float tol)
+{
+	if (ref <= (tgt + tol) &&
+		ref >= (tgt - tol) )
+		{
+			return true;
+		}
+	else
+	{
+		return false;
+	}
+	return true;
+}
+
+
+
+VertDataOut VSDefault(VertDataIn v_in)
+{
+	VertDataOut vert_out;
+	vert_out.pos = mul(float4(v_in.pos.xyz, 1.0), ViewProj);
+	vert_out.uv  = v_in.uv;
+	return vert_out;
+}
+
+float4 PSFilterFlash(VertDataOut v_in) : TARGET
+{
+	float4 rgba = image.Sample(textureSampler, v_in.uv);
+	
+	float4 currentF1 = currentTex1.Sample(textureSampler, v_in.uv);
+	
+	float4 oldF1 = oldTex1.Sample(textureSampler, v_in.uv);
+	float4 oldF2 = oldTex2.Sample(textureSampler, v_in.uv);
+	float4 oldF3 = oldTex3.Sample(textureSampler, v_in.uv);
+	float4 oldF4 = oldTex4.Sample(textureSampler, v_in.uv);
+	float4 oldF5 = oldTex5.Sample(textureSampler, v_in.uv);
+	
+	float tolerance = threshold1;
+	
+	bool red = false;
+	bool green = false;
+	bool blue = false;
+	
+	
+	red = 	checkTolerance(oldF1.r,colorTarget.r,tolerance);
+	green = checkTolerance(oldF1.g,colorTarget.g,tolerance);
+	blue = 	checkTolerance(oldF1.b,colorTarget.b,tolerance);
+	
+	if (red && green && blue)
+	{
+		red = 	checkTolerance(oldF2.r,colorTarget.r,tolerance);
+		green = checkTolerance(oldF2.g,colorTarget.g,tolerance);
+		blue = 	checkTolerance(oldF2.b,colorTarget.b,tolerance);
+		
+		if (red && green && blue)
+		{
+			red = 	checkTolerance(oldF3.r,colorTarget.r,tolerance);
+			green = checkTolerance(oldF3.g,colorTarget.g,tolerance);
+			blue = 	checkTolerance(oldF3.b,colorTarget.b,tolerance);
+			
+			if (red && green && blue)
+			{
+				red = 	checkTolerance(oldF4.r,colorTarget.r,tolerance);
+				green = checkTolerance(oldF4.g,colorTarget.g,tolerance);
+				blue = 	checkTolerance(oldF4.b,colorTarget.b,tolerance);
+				
+				if (red && green && blue)
+				{
+					return oldF5;
+				}
+				else
+				{
+					return oldF4;
+				}
+			}
+			else
+			{
+				return oldF3;
+			}
+		}
+		else
+		{
+			return oldF2;
+		}
+			
+	}
+	else
+	{
+		return oldF1;
+	}
+	
+	return rgba;
+}
+
+technique Draw
+{
+	pass
+	{
+		vertex_shader = VSDefault(v_in);
+		pixel_shader = PSFilterFlash(v_in);
+	}
+}
