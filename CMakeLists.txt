@@ -17,6 +17,10 @@ set(LINUX_MAINTAINER_EMAIL "me@contoso.com")
 
 # TAKE NOTE: No need to edit things past this point
 
+if (WIN32 OR APPLE)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external")
+endif()
+
 set(CMAKE_PREFIX_PATH "${QTDIR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -25,10 +29,6 @@ set(CMAKE_AUTOUIC ON)
 # In case you need C++
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-if (WIN32 OR APPLE)
-include(external/FindLibObs.cmake)
-endif()
 
 find_package(LibObs REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
@@ -65,13 +65,14 @@ set(PLUGIN_HEADERS
 add_library(${CMAKE_PROJECT_NAME} MODULE ${PLUGIN_SOURCES} ${PLUGIN_HEADERS})
 
 include_directories(
+	${LIBOBS_INCLUDE_DIR}
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5Widgets_INCLUDES}
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
-	libobs
+	${LIBOBS_LIB}
 	Qt5::Core
 	Qt5::Widgets
 )
