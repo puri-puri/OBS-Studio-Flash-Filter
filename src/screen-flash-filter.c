@@ -1,21 +1,22 @@
 /*****************************************************************************
- +Copyright (C) 2017 by Eric Rasmuson <erasmuson@gmail.com>
- +
- +This file is part of OBS.
- +
- +OBS is free software: you can redistribute it and/or modify
- +it under the terms of the GNU General Public License as published by
- +the Free Software Foundation, either version 2 of the License, or
- +(at your option) any later version.
- +
- +This program is distributed in the hope that it will be useful,
- +but WITHOUT ANY WARRANTY; without even the implied warranty of
- +MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- +GNU General Public License for more details.
- +
- +You should have received a copy of the GNU General Public License
- +along with this program.  If not, see <http://www.gnu.org/licenses/>.
- +*****************************************************************************/
+Copyright (C) 2017 by Eric Rasmuson <erasmuson@gmail.com>
+
+This file is part of OBS.
+
+OBS is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*****************************************************************************/
+
 #include <obs-module.h>
 #include <obs-source.h>
 #include <obs.h>
@@ -23,12 +24,12 @@
 
 
 struct screen_flash_filter_data {
-	obs_source_t                   *context;
+	obs_source_t *context;
 
-	gs_effect_t                    *effect;
+	gs_effect_t *effect;
 
-	uint32_t                       cx;
-	uint32_t                       cy;
+	uint32_t cx;
+	uint32_t cy;
 
 	gs_texrender_t *currentRender;
 	gs_texrender_t *oldRender1;
@@ -47,14 +48,14 @@ struct screen_flash_filter_data {
 	float threshold1;
 	struct vec4 colorTarget;
 
-	bool                           processed_frame;
-	bool							firstRun;
+	bool processed_frame;
+	bool firstRun;
 };
 
 static const char *screen_flash_filter_getname(void *unused)
 {
 	UNUSED_PARAMETER(unused);
-	return obs_module_text("ScreenFlashFilter");
+	return obs_module_text("Screen Flash Filter");
 }
 
 static void screen_flash_filter_update(void *data, obs_data_t *settings)
@@ -78,12 +79,6 @@ static void screen_flash_filter_update(void *data, obs_data_t *settings)
 	vec4_from_rgba(&filter->colorTarget, CT);
 }
 
-
-
-
-
-
-
 static void free_textures(struct screen_flash_filter_data *f)
 {
 	obs_enter_graphics();
@@ -104,13 +99,6 @@ static void screen_flash_filter_destroy(void *data)
 
 	bfree(data);
 }
-
-
-
-
-
-
-
 
 static void *screen_flash_filter_create(obs_data_t *settings, obs_source_t *context)
 {
