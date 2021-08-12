@@ -8,7 +8,9 @@ and adjust the filter color and threshold to make sure that it is effective in r
 
 # Installation
 
-Just copy the files into the root folder of your OBS installation.
+Download from the [Releases page](https://github.com/mooware/OBS-Studio-Flash-Filter/releases).
+
+Extract into the root folder of your OBS installation.
 
 # Usage
 
