@@ -32,21 +32,21 @@ jobs:
       run: ./ci/windows/prepare-obs-windows.cmd
 
     - name: Build OBS Studio 32-bit
-      run: cmake --build --config $(build_config) build32
+      run: cmake --build build32 --config ${{env.build_config}}
       working-directory: $(OBSPath)
 
     - name: Build OBS Studio 64-bit
-      run: cmake --build --config $(build_config) build64
+      run: cmake --build build64 --config ${{env.build_config}}
       working-directory: $(OBSPath)
 
     - name: CMake Plugin
       run: ./ci/windows/prepare-windows.cmd
 
     - name: Build Plugin 32-bit
-      run: cmake --build --config $(build_config) build32
+      run: cmake --build build32 --config ${{env.build_config}}
 
     - name: Build Plugin 64-bit
-      run: cmake --build --config $(build_config) build64
+      run: cmake --build build64 --config ${{env.build_config}}
 
     - name: Package Plugin
       run: ./ci/windows/package-windows.cmd
