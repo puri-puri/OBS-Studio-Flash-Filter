@@ -54,13 +54,15 @@ jobs:
 
     - name: Package Plugin
       run: ./ci/windows/package-windows.cmd
+      
+    - name: Upload Build
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: windows-build
+        path: ./release/obs-screen-flash-filter.zip
 
   build_linux:
     runs-on: ubuntu-latest
-
-      # BUILD_REASON: $(Build.Reason)
-      # BRANCH_SHORT_NAME: $(Build.SourceBranchName)
-      # BRANCH_FULL_NAME: $(Build.SourceBranch)
 
     steps:
     - uses: actions/checkout@v2
@@ -74,3 +76,8 @@ jobs:
     - name: Package Plugin
       run: bash ./ci/linux/package-ubuntu.sh
 
+    - name: Upload Build
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: linux-build
+        path: ./package/obs-screen-flash-filter_0-1_amd64.deb
