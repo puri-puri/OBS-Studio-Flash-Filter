@@ -59,7 +59,7 @@ jobs:
       uses: actions/upload-artifact@v2.2.4
       with:
         name: windows-build
-        path: ./release/obs-screen-flash-filter.zip
+        path: ./package/*
 
   build_linux:
     runs-on: ubuntu-latest
