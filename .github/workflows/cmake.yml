@@ -16,11 +16,11 @@ jobs:
 
     env:
       DepsBasePath: 'D:\obs-deps'
-      DepsPath32: '$(DepsBasePath)\win32'
-      DepsPath64: '$(DepsBasePath)\win64'
+      DepsPath32: 'D:\obs-deps\win32'
+      DepsPath64: 'D:\obs-deps\win64'
       QtBaseDir: 'D:\QtDep'
-      QTDIR32: '$(QtBaseDir)\5.10.1\msvc2017'
-      QTDIR64: '$(QtBaseDir)\5.10.1\msvc2017_64'
+      QTDIR32: 'D:\QtDep\5.10.1\msvc2017'
+      QTDIR64: 'D:\QtDep\5.10.1\msvc2017_64'
       OBSPath: 'D:\obs-studio'
 
     steps:
@@ -35,12 +35,12 @@ jobs:
     - name: Checkout & CMake OBS Studio
       run: ./ci/windows/prepare-obs-windows.cmd
 
-    - name: Build OBS Studio 32-bit
-      run: cmake --build build32 --config ${{env.build_config}}
+    - name: Build libobs 32-bit
+      run: cmake --build build32/libobs --config ${{env.build_config}}
       working-directory: ${{env.OBSPath}}
 
-    - name: Build OBS Studio 64-bit
-      run: cmake --build build64 --config ${{env.build_config}}
+    - name: Build libobs 64-bit
+      run: cmake --build build64/libobs --config ${{env.build_config}}
       working-directory: ${{env.OBSPath}}
 
     - name: CMake Plugin
