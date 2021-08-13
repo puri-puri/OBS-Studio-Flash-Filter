@@ -37,11 +37,11 @@ jobs:
 
     - name: Build OBS Studio 32-bit
       run: cmake --build build32 --config ${{env.build_config}}
-      working-directory: $(OBSPath)
+      working-directory: ${{env.OBSPath}}
 
     - name: Build OBS Studio 64-bit
       run: cmake --build build64 --config ${{env.build_config}}
-      working-directory: $(OBSPath)
+      working-directory: ${{env.OBSPath}}
 
     - name: CMake Plugin
       run: ./ci/windows/prepare-windows.cmd
