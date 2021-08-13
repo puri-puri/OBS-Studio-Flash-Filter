@@ -10,6 +10,10 @@ jobs:
   build_windows:
     runs-on: windows-latest
 
+    defaults:
+      run:
+        shell: cmd
+
     env:
       DepsBasePath: 'D:\obs-deps'
       DepsPath32: '$(DepsBasePath)\win32'
