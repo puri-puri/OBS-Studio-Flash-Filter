@@ -4,14 +4,54 @@ on: [push, pull_request]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+  build_config: Release
 
 jobs:
-  build:
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Windows or Mac.  You can convert this to a matrix build if you need
-    # cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  build_windows:
+    runs-on: windows-latest
+
+    env:
+      DepsBasePath: 'D:\obs-deps'
+      DepsPath32: '$(DepsBasePath)\win32'
+      DepsPath64: '$(DepsBasePath)\win64'
+      QtBaseDir: 'D:\QtDep'
+      QTDIR32: '$(QtBaseDir)\5.10.1\msvc2017'
+      QTDIR64: '$(QtBaseDir)\5.10.1\msvc2017_64'
+      OBSPath: 'D:\obs-studio'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Qt
+      run: ./ci/windows/install-qt-win.cmd
+
+    - name: Download OBS Studio dependencies
+      run: ./ci/windows/download-obs-deps.cmd
+
+    - name: Checkout & CMake OBS Studio
+      run: ./ci/windows/prepare-obs-windows.cmd
+
+    - name: Build OBS Studio 32-bit
+      run: cmake --build --config $(build_config) build32
+      working-directory: $(OBSPath)
+
+    - name: Build OBS Studio 64-bit
+      run: cmake --build --config $(build_config) build64
+      working-directory: $(OBSPath)
+
+    - name: CMake Plugin
+      run: ./ci/windows/prepare-windows.cmd
+
+    - name: Build Plugin 32-bit
+      run: cmake --build --config $(build_config) build32
+
+    - name: Build Plugin 64-bit
+      run: cmake --build --config $(build_config) build64
+
+    - name: Package Plugin
+      run: ./ci/windows/package-windows.cmd
+
+  build_linux:
     runs-on: ubuntu-latest
 
       # BUILD_REASON: $(Build.Reason)
@@ -29,3 +69,4 @@ jobs:
 
     - name: Package Plugin
       run: bash ./ci/linux/package-ubuntu.sh
+
